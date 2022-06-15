@@ -58,12 +58,12 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
                 .placeholder(R.drawable.ic_user_avatar)
                 .error(R.drawable.ic_user_avatar)
                 .into(holder.itemConversationBinding.civAvatar);
-        holder.itemConversationBinding.tvChatName.setText(userList.get(holder.getLayoutPosition()).getName().trim());
+        holder.itemConversationBinding.tvChatName.setText(trim(userList.get(holder.getLayoutPosition()).getName()));
 
         firebaseAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = firebaseAuth.getCurrentUser();
         if (currentUser != null) {
-            String senderRoom = currentUser.getUid().trim() + userList.get(holder.getLayoutPosition()).getUid().trim();
+            String senderRoom = trim(currentUser.getUid()) + trim(userList.get(holder.getLayoutPosition()).getUid());
 
             firebaseDatabase = FirebaseDatabase.getInstance();
             firebaseDatabase.getReference().child("chats")
@@ -142,5 +142,9 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
             itemConversationBinding = ItemConversationBinding.bind(itemView);
             itemConversationBinding.tvChatName.setSelected(true);
         }
+    }
+
+    public static String trim(final String str) {
+        return str == null ? null : str.trim();
     }
 }

@@ -39,7 +39,7 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.ViewHolder> 
                 .placeholder(R.drawable.ic_user_avatar)
                 .error(R.drawable.ic_user_avatar)
                 .into(holder.itemStoryBinding.civStory);
-        holder.itemStoryBinding.tvUserStory.setText(userStoryList.get(position).getName().trim());
+        holder.itemStoryBinding.tvUserStory.setText(userStoryList.get(position).getName());
     }
 
     @Override

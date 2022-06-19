@@ -5,6 +5,7 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
@@ -63,6 +64,7 @@ public class MainActivity extends AppCompat {
     protected void onResume() {
         super.onResume();
         setStatusOnline();
+//        recreate();
     }
 
     @Override
@@ -99,12 +101,12 @@ public class MainActivity extends AppCompat {
                 @Override
                 public void onSuccess(String token) {
                     if (token != null && !token.isEmpty()) {
-                        FirebaseManager.getInstance().setUserToken(currentUser.getUid().trim(), token);
+                        FirebaseManager.getInstance().setUserToken(currentUser.getUid(), token);
                     }
                 }
             });
 
-            firebaseManager.getUserAvatar(currentUser.getUid().trim());
+            firebaseManager.getUserAvatar(currentUser.getUid());
             firebaseManager.setReadUserAvatar(new FirebaseManager.GetUserAvatarListener() {
                 @Override
                 public void getUserAvatarListener(String avatar) {
@@ -254,14 +256,21 @@ public class MainActivity extends AppCompat {
     private void setStatusOnline() {
         FirebaseUser currentUser = firebaseAuth.getCurrentUser();
         if (currentUser != null) {
-            firebaseManager.setStatusOnline(currentUser.getUid().trim());
+            firebaseManager.setStatusOnline(currentUser.getUid());
         }
     }
 
     private void setStatusOffline() {
         FirebaseUser currentUser = firebaseAuth.getCurrentUser();
         if (currentUser != null) {
-            firebaseManager.setStatusOffline(currentUser.getUid().trim());
+            firebaseManager.setStatusOffline(currentUser.getUid());
         }
+    }
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d(TAG, "onPause");
     }
 }

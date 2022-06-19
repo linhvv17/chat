@@ -64,11 +64,11 @@ public class InComingCallActivity extends AppCompat {
 //        stringeeCall = Common.callsMap.get(callId);
 
 //        if (stringeeCall != null) {
-//            firebaseManager.getUserName(stringeeCall.getFrom().trim());
+//            firebaseManager.getUserName(stringeeCall.getFrom());
 //            firebaseManager.setReadUserName(new FirebaseManager.GetUserNameListener() {
 //                @Override
 //                public void getUserNameListener(String name) {
-//                    activityInComingCallBinding.tvFrom.setText(name.trim());
+//                    activityInComingCallBinding.tvFrom.setText(name);
 //                }
 //            });
 //
@@ -263,7 +263,7 @@ public class InComingCallActivity extends AppCompat {
 //                runOnUiThread(new Runnable() {
 //                    @Override
 //                    public void run() {
-//                        Common.reportMessage(InComingCallActivity.this, s.trim());
+//                        Common.reportMessage(InComingCallActivity.this, s);
 //                    }
 //                });
 //            }

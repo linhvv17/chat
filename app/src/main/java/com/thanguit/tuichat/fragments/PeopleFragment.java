@@ -71,6 +71,7 @@ public class PeopleFragment extends Fragment {
     public void onResume() {
         super.onResume();
         requireActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING); // Open soft keyboard without push up bottom navigation
+        initializeViews();
     }
 
     @Override
@@ -124,7 +125,7 @@ public class PeopleFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                String keyWord = editable.toString().trim(); // Chuyển kí tự về dạng chữ viết thường để tìm kiếm cho nhanh
+                String keyWord = editable.toString(); // Chuyển kí tự về dạng chữ viết thường để tìm kiếm cho nhanh
                 if (!keyWord.isEmpty()) {
                     searching(keyWord);
                 } else {
@@ -137,7 +138,7 @@ public class PeopleFragment extends Fragment {
     private void searching(String keyWord) {
         List<User> userLists = new ArrayList<>();
         for (User data : userList) {
-            if (data.getName().trim().contains(keyWord)) {
+            if (data.getName().contains(keyWord)) {
                 userLists.add(data);
             }
         }

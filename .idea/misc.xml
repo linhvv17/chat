@@ -143,6 +143,10 @@
         <entry key="..\:/mobile/tuichat_android_java/app/src/main/res/menu/menu_bottom_nav.xml" value="0.25416666666666665" />
         <entry key="..\:/mobile/tuichat_android_java/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.2703125" />
         <entry key="..\:/mobile/tuichat_android_java/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.2703125" />
+        <entry key="app/src/main/res/layout/activity_login.xml" value="0.12916666666666668" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/activity_user_profile.xml" value="0.12916666666666668" />
+        <entry key="app/src/main/res/layout/layout_bottom_sheet_setting_language.xml" value="0.1" />
       </map>
     </option>
   </component>

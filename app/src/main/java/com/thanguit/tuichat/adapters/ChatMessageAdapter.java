@@ -47,6 +47,8 @@ import com.thanguit.tuichat.utils.OptionDialog;
 import java.util.HashMap;
 import java.util.List;
 
+import static com.thanguit.tuichat.adapters.UserAdapter.trim;
+
 public class ChatMessageAdapter extends RecyclerView.Adapter {
     private static final String TAG = "ChatMessageAdapter";
 
@@ -104,7 +106,7 @@ public class ChatMessageAdapter extends RecyclerView.Adapter {
     public int getItemViewType(int position) {
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser != null) {
-            if (currentUser.getUid().trim().equals(chatMessageList.get(position).getSenderID().trim())) {
+            if (currentUser.getUid().equals(chatMessageList.get(position).getSenderID())) {
                 return ITEM_SEND;
             } else {
                 return ITEM_RECEIVE;
@@ -122,16 +124,16 @@ public class ChatMessageAdapter extends RecyclerView.Adapter {
         FirebaseUser currentUser = firebaseAuth.getCurrentUser();
 
         if (currentUser != null) {
-            if (uid.trim().equals(currentUser.getUid().trim())) {
+            if (trim(uid).equals(trim(currentUser.getUid()))) {
                 SendViewHolder sendViewHolder = (SendViewHolder) holder;
 
-                sendViewHolder.itemChatMessageSendBinding.tvTime.setText(chatMessage.getTime().trim());
-                if (!chatMessage.getImage().trim().isEmpty()) {
-                    handleImage(sendViewHolder.itemChatMessageSendBinding.ivImage, chatMessage.getImage().trim());
+                sendViewHolder.itemChatMessageSendBinding.tvTime.setText(trim(chatMessage.getTime()));
+                if (!chatMessage.getImage().isEmpty()) {
+                    handleImage(sendViewHolder.itemChatMessageSendBinding.ivImage, trim(chatMessage.getImage()));
                     sendViewHolder.itemChatMessageSendBinding.ivImage.setVisibility(View.VISIBLE);
                     sendViewHolder.itemChatMessageSendBinding.tvSend.setVisibility(View.GONE);
                 } else {
-                    sendViewHolder.itemChatMessageSendBinding.tvSend.setText(chatMessage.getMessage().trim());
+                    sendViewHolder.itemChatMessageSendBinding.tvSend.setText(trim(chatMessage.getMessage()));
                     sendViewHolder.itemChatMessageSendBinding.ivImage.setVisibility(View.GONE);
                     sendViewHolder.itemChatMessageSendBinding.tvSend.setVisibility(View.VISIBLE);
                 }
@@ -139,7 +141,7 @@ public class ChatMessageAdapter extends RecyclerView.Adapter {
                 sendViewHolder.itemChatMessageSendBinding.llChatSend.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View view) {
-                        openChatBottomSheetDialog(CHAT_SEND.trim(), chatMessage);
+                        openChatBottomSheetDialog(CHAT_SEND, chatMessage);
                         return false;
                     }
                 });
@@ -153,13 +155,13 @@ public class ChatMessageAdapter extends RecyclerView.Adapter {
                 if (getItemViewType(position) == ITEM_SEND) {
                     SendViewHolder sendViewHolder = (SendViewHolder) holder;
 
-                    sendViewHolder.itemChatMessageSendBinding.tvTime.setText(chatMessage.getTime().trim());
-                    if (!chatMessage.getImage().trim().isEmpty()) {
-                        handleImage(sendViewHolder.itemChatMessageSendBinding.ivImage, chatMessage.getImage().trim());
+                    sendViewHolder.itemChatMessageSendBinding.tvTime.setText(chatMessage.getTime());
+                    if (!chatMessage.getImage().isEmpty()) {
+                        handleImage(sendViewHolder.itemChatMessageSendBinding.ivImage, chatMessage.getImage());
                         sendViewHolder.itemChatMessageSendBinding.ivImage.setVisibility(View.VISIBLE);
                         sendViewHolder.itemChatMessageSendBinding.tvSend.setVisibility(View.GONE);
                     } else {
-                        sendViewHolder.itemChatMessageSendBinding.tvSend.setText(chatMessage.getMessage().trim());
+                        sendViewHolder.itemChatMessageSendBinding.tvSend.setText(chatMessage.getMessage());
                         sendViewHolder.itemChatMessageSendBinding.ivImage.setVisibility(View.GONE);
                         sendViewHolder.itemChatMessageSendBinding.tvSend.setVisibility(View.VISIBLE);
                     }
@@ -174,7 +176,7 @@ public class ChatMessageAdapter extends RecyclerView.Adapter {
                     sendViewHolder.itemChatMessageSendBinding.llChatSend.setOnLongClickListener(new View.OnLongClickListener() {
                         @Override
                         public boolean onLongClick(View view) {
-                            openChatBottomSheetDialog(CHAT_SEND.trim(), chatMessage);
+                            openChatBottomSheetDialog(CHAT_SEND, chatMessage);
                             return false;
                         }
                     });
@@ -186,13 +188,13 @@ public class ChatMessageAdapter extends RecyclerView.Adapter {
                             .placeholder(R.drawable.ic_user_avatar)
                             .error(R.drawable.ic_user_avatar)
                             .into(receiveViewHolder.itemChatMessageReceiveBinding.civAvatar);
-                    receiveViewHolder.itemChatMessageReceiveBinding.tvTime.setText(chatMessage.getTime().trim());
-                    if (!chatMessage.getImage().trim().isEmpty()) {
-                        handleImage(receiveViewHolder.itemChatMessageReceiveBinding.ivImage, chatMessage.getImage().trim());
+                    receiveViewHolder.itemChatMessageReceiveBinding.tvTime.setText(chatMessage.getTime());
+                    if (!chatMessage.getImage().isEmpty()) {
+                        handleImage(receiveViewHolder.itemChatMessageReceiveBinding.ivImage, chatMessage.getImage());
                         receiveViewHolder.itemChatMessageReceiveBinding.ivImage.setVisibility(View.VISIBLE);
                         receiveViewHolder.itemChatMessageReceiveBinding.tvReceive.setVisibility(View.GONE);
                     } else {
-                        receiveViewHolder.itemChatMessageReceiveBinding.tvReceive.setText(chatMessage.getMessage().trim());
+                        receiveViewHolder.itemChatMessageReceiveBinding.tvReceive.setText(chatMessage.getMessage());
                         receiveViewHolder.itemChatMessageReceiveBinding.ivImage.setVisibility(View.GONE);
                         receiveViewHolder.itemChatMessageReceiveBinding.tvReceive.setVisibility(View.VISIBLE);
                     }
@@ -206,7 +208,7 @@ public class ChatMessageAdapter extends RecyclerView.Adapter {
                     receiveViewHolder.itemChatMessageReceiveBinding.llChatReceive.setOnLongClickListener(new View.OnLongClickListener() {
                         @Override
                         public boolean onLongClick(View view) {
-                            openChatBottomSheetDialog(CHAT_RECEIVE.trim(), chatMessage);
+                            openChatBottomSheetDialog(CHAT_RECEIVE, chatMessage);
                             return false;
                         }
                     });
@@ -234,7 +236,7 @@ public class ChatMessageAdapter extends RecyclerView.Adapter {
                                         .child("emoticon").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                                     @Override
                                     public void onComplete(@NonNull Task<DataSnapshot> task2) {
-                                        String icon = index.toString().trim();
+                                        String icon = index.toString();
                                         String room1 = String.valueOf(task1.getResult().getValue());
                                         String room2 = String.valueOf(task2.getResult().getValue());
 
@@ -356,7 +358,7 @@ public class ChatMessageAdapter extends RecyclerView.Adapter {
 
     private void handleImage(ImageView ivImage, String image) {
         Picasso.get()
-                .load(image.trim())
+                .load(image)
                 .placeholder(R.drawable.ic_picture)
                 .error(R.drawable.ic_picture)
                 .into(ivImage);
@@ -377,7 +379,7 @@ public class ChatMessageAdapter extends RecyclerView.Adapter {
         firebaseAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = firebaseAuth.getCurrentUser();
         if (currentUser != null) {
-            if (uid.trim().equals(currentUser.getUid().trim())) {
+            if (uid.equals(currentUser.getUid())) {
                 layoutBottomSheetChatBinding.rlRemoveForEveryone.setVisibility(View.GONE);
             }
         }
@@ -386,7 +388,7 @@ public class ChatMessageAdapter extends RecyclerView.Adapter {
             @Override
             public void onClick(View view) {
                 ClipboardManager clipboardManager = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
-                ClipData clipData = ClipData.newPlainText("text", chatMessage.getMessage().trim());
+                ClipData clipData = ClipData.newPlainText("text", chatMessage.getMessage());
                 clipboardManager.setPrimaryClip(clipData);
 
                 MyToast.makeText(context, MyToast.SUCCESS, context.getString(R.string.toast10), MyToast.SHORT).show();
@@ -417,9 +419,9 @@ public class ChatMessageAdapter extends RecyclerView.Adapter {
         if (layout.equals("REMOVE_FOR_YOU")) {
             OptionDialog removeForYouDialog = new OptionDialog(
                     context,
-                    context.getString(R.string.tvRemoveForYou).trim(),
-                    context.getString(R.string.tvDialogContent1).trim(),
-                    context.getString(R.string.btnDialog11).trim(),
+                    context.getString(R.string.tvRemoveForYou),
+                    context.getString(R.string.tvDialogContent1),
+                    context.getString(R.string.btnDialog11),
                     context.getString(R.string.btnDialog22),
                     true,
                     new OptionDialog.SetActionButtonListener() {
@@ -437,11 +439,11 @@ public class ChatMessageAdapter extends RecyclerView.Adapter {
                                             if (chatMessageList != null) {
                                                 HashMap<String, Object> lastMessageObj = new HashMap<>();
                                                 if (chatMessageList.isEmpty()) {
-                                                    lastMessageObj.put("lastMessage", context.getString(R.string.tvLastMessage).trim());
+                                                    lastMessageObj.put("lastMessage", context.getString(R.string.tvLastMessage));
                                                 } else {
-                                                    lastMessageObj.put("lastMessage", chatMessageList.get(chatMessageList.size() - 1).getMessage().trim());
+                                                    lastMessageObj.put("lastMessage", chatMessageList.get(chatMessageList.size() - 1).getMessage());
                                                 }
-                                                firebaseDatabase.getReference().child("chats").child(senderRoom.trim()).updateChildren(lastMessageObj);
+                                                firebaseDatabase.getReference().child("chats").child(senderRoom).updateChildren(lastMessageObj);
                                             }
 
                                             dialog.dismiss();
@@ -456,9 +458,9 @@ public class ChatMessageAdapter extends RecyclerView.Adapter {
         } else {
             OptionDialog removeForEveryoneDialog = new OptionDialog(
                     context,
-                    context.getString(R.string.tvRemoveForEveryone).trim(),
-                    context.getString(R.string.tvDialogContent2).trim(),
-                    context.getString(R.string.btnDialog11).trim(),
+                    context.getString(R.string.tvRemoveForEveryone),
+                    context.getString(R.string.tvDialogContent2),
+                    context.getString(R.string.btnDialog11),
                     context.getString(R.string.btnDialog22),
                     true,
                     new OptionDialog.SetActionButtonListener() {
@@ -480,12 +482,12 @@ public class ChatMessageAdapter extends RecyclerView.Adapter {
                                                             if (chatMessageList != null) {
                                                                 HashMap<String, Object> lastMessageObj = new HashMap<>();
                                                                 if (chatMessageList.isEmpty()) {
-                                                                    lastMessageObj.put("lastMessage", context.getString(R.string.tvLastMessage).trim());
+                                                                    lastMessageObj.put("lastMessage", context.getString(R.string.tvLastMessage));
                                                                 } else {
-                                                                    lastMessageObj.put("lastMessage", chatMessageList.get(chatMessageList.size() - 1).getMessage().trim());
+                                                                    lastMessageObj.put("lastMessage", chatMessageList.get(chatMessageList.size() - 1).getMessage());
                                                                 }
-                                                                firebaseDatabase.getReference().child("chats").child(senderRoom.trim()).updateChildren(lastMessageObj);
-                                                                firebaseDatabase.getReference().child("chats").child(receiverRoom.trim()).updateChildren(lastMessageObj);
+                                                                firebaseDatabase.getReference().child("chats").child(senderRoom).updateChildren(lastMessageObj);
+                                                                firebaseDatabase.getReference().child("chats").child(receiverRoom).updateChildren(lastMessageObj);
                                                             }
 
                                                             dialog.dismiss();

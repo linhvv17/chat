@@ -79,7 +79,7 @@ public class SetupProfileActivity extends AppCompat {
         activitySetupProfileBinding.civUserAvatar.setOnClickListener(view -> activityResultLauncher.launch("image/*"));
 
         activitySetupProfileBinding.btnSetupProfile.setOnClickListener(view -> {
-            if (activitySetupProfileBinding.edtSetupProfileName.getText().toString().trim().isEmpty()) {
+            if (activitySetupProfileBinding.edtSetupProfileName.getText().toString().isEmpty()) {
                 activitySetupProfileBinding.edtSetupProfileName.setError(getString(R.string.edtSetupProfileNameError));
                 openSoftKeyboard.openSoftKeyboard(this, activitySetupProfileBinding.edtSetupProfileName);
             } else if (selectImg == null) {
@@ -89,7 +89,7 @@ public class SetupProfileActivity extends AppCompat {
                 if (firebaseUser != null) {
                     loadingDialog.startLoading(this, false);
 
-                    StorageReference storageReference = firebaseStorage.getReference().child(USER_AVATAR_STORAGE.trim()).child(firebaseUser.getUid());
+                    StorageReference storageReference = firebaseStorage.getReference().child(USER_AVATAR_STORAGE).child(firebaseUser.getUid());
                     storageReference.putFile(selectImg).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
@@ -98,14 +98,14 @@ public class SetupProfileActivity extends AppCompat {
                                     @Override
                                     public void onSuccess(Uri uri) {
                                         String uid = firebaseUser.getUid();
-                                        String name = activitySetupProfileBinding.edtSetupProfileName.getText().toString().trim();
+                                        String name = activitySetupProfileBinding.edtSetupProfileName.getText().toString();
                                         String phoneNumber = firebaseUser.getPhoneNumber();
                                         String email = "";
-                                        String avatar = uri.toString().trim();
+                                        String avatar = uri.toString();
 
                                         User user = new User(uid, name, phoneNumber, email, avatar);
                                         firebaseDatabase.getReference()
-                                                .child(USER_DATABASE.trim())
+                                                .child(USER_DATABASE)
                                                 .child(uid)
                                                 .setValue(user)
                                                 .addOnFailureListener(new OnFailureListener() {

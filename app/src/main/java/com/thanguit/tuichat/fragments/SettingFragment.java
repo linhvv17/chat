@@ -127,6 +127,7 @@ public class SettingFragment extends Fragment {
                 settingLanguage.changeLanguage(getContext(), VIETNAMESE);
                 binding.ivVietnamChecked.setVisibility(View.VISIBLE);
                 binding.ivEnglandChecked.setVisibility(View.GONE);
+                bottomSheetDialog.hide();
                 requireActivity().recreate();
             }
         });
@@ -137,6 +138,7 @@ public class SettingFragment extends Fragment {
                 settingLanguage.changeLanguage(getContext(), ENGLISH);
                 binding.ivEnglandChecked.setVisibility(View.VISIBLE);
                 binding.ivVietnamChecked.setVisibility(View.GONE);
+                bottomSheetDialog.hide();
                 requireActivity().recreate();
             }
         });

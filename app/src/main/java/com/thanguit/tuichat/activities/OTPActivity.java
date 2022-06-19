@@ -82,10 +82,10 @@ public class OTPActivity extends AppCompat {
         if (intent != null) {
             if (intent.hasExtra("PHONE_NUMBER")) {
                 String yourPhoneNumber = intent.getStringExtra("PHONE_NUMBER");
-                if (yourPhoneNumber.trim().isEmpty()) {
+                if (yourPhoneNumber.isEmpty()) {
                     activityOtpactivityBinding.tvYourPhoneNumber.setText(getString(R.string.tvErrorPhoneNumber));
                 } else {
-                    Log.d(TAG, "Your Phone Number: " + yourPhoneNumber.trim());
+                    Log.d(TAG, "Your Phone Number: " + yourPhoneNumber);
                     activityOtpactivityBinding.tvYourPhoneNumber.setText(yourPhoneNumber);
 
                     PhoneAuthOptions phoneAuthOptions = PhoneAuthOptions.newBuilder(firebaseAuth)
@@ -176,7 +176,7 @@ public class OTPActivity extends AppCompat {
                                     loadingDialog.startLoading(OTPActivity.this, false);
 
                                     firebaseDatabase.getReference()
-                                            .child(USER_DATABASE.trim())
+                                            .child(USER_DATABASE)
                                             .child(firebaseUser.getUid())
                                             .get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                                         @Override
@@ -223,7 +223,7 @@ public class OTPActivity extends AppCompat {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if (!charSequence.toString().trim().isEmpty()) {
+                if (!charSequence.toString().isEmpty()) {
                     activityOtpactivityBinding.edtOTPCode2.requestFocus();
                 }
             }
@@ -240,7 +240,7 @@ public class OTPActivity extends AppCompat {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if (!charSequence.toString().trim().isEmpty()) {
+                if (!charSequence.toString().isEmpty()) {
                     activityOtpactivityBinding.edtOTPCode3.requestFocus();
                 } else {
                     activityOtpactivityBinding.edtOTPCode1.requestFocus();
@@ -259,7 +259,7 @@ public class OTPActivity extends AppCompat {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if (!charSequence.toString().trim().isEmpty()) {
+                if (!charSequence.toString().isEmpty()) {
                     activityOtpactivityBinding.edtOTPCode4.requestFocus();
                 } else {
                     activityOtpactivityBinding.edtOTPCode2.requestFocus();
@@ -278,7 +278,7 @@ public class OTPActivity extends AppCompat {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if (!charSequence.toString().trim().isEmpty()) {
+                if (!charSequence.toString().isEmpty()) {
                     activityOtpactivityBinding.edtOTPCode5.requestFocus();
                 } else {
                     activityOtpactivityBinding.edtOTPCode3.requestFocus();
@@ -297,7 +297,7 @@ public class OTPActivity extends AppCompat {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if (!charSequence.toString().trim().isEmpty()) {
+                if (!charSequence.toString().isEmpty()) {
                     activityOtpactivityBinding.edtOTPCode6.requestFocus();
                 } else {
                     activityOtpactivityBinding.edtOTPCode4.requestFocus();
@@ -316,7 +316,7 @@ public class OTPActivity extends AppCompat {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if (charSequence.toString().trim().isEmpty()) {
+                if (charSequence.toString().isEmpty()) {
                     activityOtpactivityBinding.edtOTPCode5.requestFocus();
                 }
             }
@@ -328,27 +328,27 @@ public class OTPActivity extends AppCompat {
     }
 
     private String checkOTP() {
-        String OTP = activityOtpactivityBinding.edtOTPCode1.getText().toString().trim() +
-                activityOtpactivityBinding.edtOTPCode2.getText().toString().trim() +
-                activityOtpactivityBinding.edtOTPCode3.getText().toString().trim() +
-                activityOtpactivityBinding.edtOTPCode4.getText().toString().trim() +
-                activityOtpactivityBinding.edtOTPCode5.getText().toString().trim() +
-                activityOtpactivityBinding.edtOTPCode6.getText().toString().trim();
+        String OTP = activityOtpactivityBinding.edtOTPCode1.getText().toString() +
+                activityOtpactivityBinding.edtOTPCode2.getText().toString() +
+                activityOtpactivityBinding.edtOTPCode3.getText().toString() +
+                activityOtpactivityBinding.edtOTPCode4.getText().toString() +
+                activityOtpactivityBinding.edtOTPCode5.getText().toString() +
+                activityOtpactivityBinding.edtOTPCode6.getText().toString();
 
-        if (activityOtpactivityBinding.edtOTPCode1.getText().toString().trim().isEmpty()) {
+        if (activityOtpactivityBinding.edtOTPCode1.getText().toString().isEmpty()) {
             return CODE_1;
-        } else if (activityOtpactivityBinding.edtOTPCode2.getText().toString().trim().isEmpty()) {
+        } else if (activityOtpactivityBinding.edtOTPCode2.getText().toString().isEmpty()) {
             return CODE_2;
-        } else if (activityOtpactivityBinding.edtOTPCode3.getText().toString().trim().isEmpty()) {
+        } else if (activityOtpactivityBinding.edtOTPCode3.getText().toString().isEmpty()) {
             return CODE_3;
-        } else if (activityOtpactivityBinding.edtOTPCode4.getText().toString().trim().isEmpty()) {
+        } else if (activityOtpactivityBinding.edtOTPCode4.getText().toString().isEmpty()) {
             return CODE_4;
-        } else if (activityOtpactivityBinding.edtOTPCode5.getText().toString().trim().isEmpty()) {
+        } else if (activityOtpactivityBinding.edtOTPCode5.getText().toString().isEmpty()) {
             return CODE_5;
-        } else if (activityOtpactivityBinding.edtOTPCode6.getText().toString().trim().isEmpty()) {
+        } else if (activityOtpactivityBinding.edtOTPCode6.getText().toString().isEmpty()) {
             return CODE_6;
         } else {
-            return OTP.trim();
+            return OTP;
         }
     }
 }

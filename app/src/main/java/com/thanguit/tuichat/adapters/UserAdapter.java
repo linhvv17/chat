@@ -76,8 +76,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
                                 String lastMessageTime = snapshot.child("lastMessageTime").getValue(String.class);
 
                                 if (lastMessage != null && lastMessageTime != null) {
-                                    holder.itemConversationBinding.tvLastMessage.setText(lastMessage.trim());
-                                    holder.itemConversationBinding.tvChatTime.setText(handleDate(lastMessageTime.trim()));
+                                    holder.itemConversationBinding.tvLastMessage.setText(lastMessage);
+                                    holder.itemConversationBinding.tvChatTime.setText(handleDate(lastMessageTime));
                                 }
                             }
                         }
@@ -145,6 +145,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     }
 
     public static String trim(final String str) {
-        return str == null ? null : str.trim();
+        return str == null ? null : str;
     }
 }

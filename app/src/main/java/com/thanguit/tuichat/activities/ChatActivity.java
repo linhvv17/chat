@@ -65,6 +65,8 @@ import java.util.Map;
 import gun0912.tedbottompicker.TedBottomPicker;
 import gun0912.tedbottompicker.TedBottomSheetDialogFragment;
 
+import static com.thanguit.tuichat.adapters.UserAdapter.trim;
+
 public class ChatActivity extends AppCompat {
     private ActivityChatBinding activityChatBinding;
     private static final String TAG = "ChatActivity";
@@ -131,9 +133,9 @@ public class ChatActivity extends AppCompat {
             if (intent.hasExtra("USER")) {
                 user = (User) intent.getParcelableExtra("USER");
                 if (user != null) {
-                    String receiverID = user.getUid().trim();
-                    String name = user.getName().trim();
-                    avatar = user.getAvatar().trim();
+                    String receiverID = user.getUid();
+                    String name = user.getName();
+                    avatar = user.getAvatar();
 
                     activityChatBinding.tvUserName.setText(name);
                     Picasso.get()
@@ -141,15 +143,15 @@ public class ChatActivity extends AppCompat {
                             .placeholder(R.drawable.ic_user_avatar)
                             .error(R.drawable.ic_user_avatar)
                             .into(activityChatBinding.civAvatar);
-                    firebaseDatabase.getReference().child("users/" + receiverID.trim() + "/status").addValueEventListener(new ValueEventListener() {
+                    firebaseDatabase.getReference().child("users/" + receiverID + "/status").addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             if (snapshot.exists()) {
                                 String status = snapshot.getValue(String.class);
                                 if (status != null && !status.isEmpty()) {
-                                    if (status.equals(STATUS_DATABASE_ONLINE.trim())) {
+                                    if (status.equals(STATUS_DATABASE_ONLINE)) {
                                         activityChatBinding.ivStatusOnline.setVisibility(View.VISIBLE);
-                                    } else if (status.equals(STATUS_DATABASE_OFFLINE.trim())) {
+                                    } else if (status.equals(STATUS_DATABASE_OFFLINE)) {
                                         activityChatBinding.ivStatusOnline.setVisibility(View.GONE);
                                     }
                                 }
@@ -163,31 +165,33 @@ public class ChatActivity extends AppCompat {
 
                     FirebaseUser currentUser = firebaseAuth.getCurrentUser();
                     if (currentUser != null) {
-                        senderRoom = currentUser.getUid() + receiverID.trim();
-                        receiverRoom = receiverID.trim() + currentUser.getUid();
+                        senderRoom = currentUser.getUid() + receiverID;
+                        receiverRoom = receiverID + currentUser.getUid();
 
-                        if (user.getUid().trim().equals(currentUser.getUid().trim())) {
-                            activityChatBinding.ibVideoCall.setVisibility(View.GONE);
-                            activityChatBinding.ibCall.setVisibility(View.GONE);
-                        } else {
-                            firebaseDatabase.getReference().child("chats").child(senderRoom).child("friendTyping").addValueEventListener(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                    String isTyping = snapshot.getValue(String.class);
+                        if(user.getUid() != null) {
+                            if (trim(user.getUid()).equals(trim(currentUser.getUid()))) {
+                                activityChatBinding.ibVideoCall.setVisibility(View.GONE);
+                                activityChatBinding.ibCall.setVisibility(View.GONE);
+                            } else {
+                                firebaseDatabase.getReference().child("chats").child(senderRoom).child("friendTyping").addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        String isTyping = snapshot.getValue(String.class);
 
-                                    if (isTyping != null && !isTyping.isEmpty()) {
-                                        if (isTyping.equals(TYPING)) {
-                                            activityChatBinding.lavAnimationTyping.setVisibility(View.VISIBLE);
-                                        } else {
-                                            activityChatBinding.lavAnimationTyping.setVisibility(View.GONE);
+                                        if (isTyping != null && !isTyping.isEmpty()) {
+                                            if (isTyping.equals(TYPING)) {
+                                                activityChatBinding.lavAnimationTyping.setVisibility(View.VISIBLE);
+                                            } else {
+                                                activityChatBinding.lavAnimationTyping.setVisibility(View.GONE);
+                                            }
                                         }
                                     }
-                                }
 
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError error) {
-                                }
-                            });
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+                                    }
+                                });
+                            }
                         }
 
                         chatMessageList = new ArrayList<>();
@@ -233,11 +237,11 @@ public class ChatActivity extends AppCompat {
                             }
                         });
 
-                        firebaseDatabase.getReference().child("chats").child(senderRoom.trim()).child("lastMessage")
+                        firebaseDatabase.getReference().child("chats").child(senderRoom).child("lastMessage")
                                 .addValueEventListener(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                        if (!user.getUid().trim().equals(currentUser.getUid().trim())) {
+                                        if (!user.getUid().equals(currentUser.getUid())) {
                                             activityChatBinding.llToBottom.setVisibility(View.VISIBLE);
                                         }
                                     }
@@ -258,7 +262,7 @@ public class ChatActivity extends AppCompat {
                         activityChatBinding.ivSend.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                String message = activityChatBinding.edtChatMessage.getText().toString().trim();
+                                String message = activityChatBinding.edtChatMessage.getText().toString();
                                 if (message.isEmpty()) {
                                     openSoftKeyboard.openSoftKeyboard(ChatActivity.this, activityChatBinding.edtChatMessage);
                                 } else {
@@ -269,10 +273,10 @@ public class ChatActivity extends AppCompat {
                                     String time = dateFormat.format(date);
 
                                     activityChatBinding.edtChatMessage.setText("");
-                                    ChatMessage chatMessage = new ChatMessage(currentUser.getUid().trim(), message, "", time);
+                                    ChatMessage chatMessage = new ChatMessage(currentUser.getUid(), message, "", time);
                                     firebaseDatabase.getReference()
                                             .child("chats")
-                                            .child(senderRoom.trim())
+                                            .child(senderRoom)
                                             .child("messages")
                                             .child(randomID)
                                             .setValue(chatMessage)
@@ -287,7 +291,7 @@ public class ChatActivity extends AppCompat {
                                                 public void onSuccess(Void unused) {
                                                     firebaseDatabase.getReference()
                                                             .child("chats")
-                                                            .child(receiverRoom.trim())
+                                                            .child(receiverRoom)
                                                             .child("messages")
                                                             .child(randomID)
                                                             .setValue(chatMessage)
@@ -303,17 +307,17 @@ public class ChatActivity extends AppCompat {
                                                                     activityChatBinding.rvChatMessage.smoothScrollToPosition(activityChatBinding.rvChatMessage.getAdapter().getItemCount());
 
                                                                     HashMap<String, Object> lastMessageObj = new HashMap<>();
-                                                                    lastMessageObj.put("lastMessage", chatMessage.getMessage().trim());
-                                                                    lastMessageObj.put("lastMessageTime", chatMessage.getTime().trim());
-                                                                    firebaseDatabase.getReference().child("chats").child(senderRoom.trim()).updateChildren(lastMessageObj);
-                                                                    firebaseDatabase.getReference().child("chats").child(receiverRoom.trim()).updateChildren(lastMessageObj);
+                                                                    lastMessageObj.put("lastMessage", chatMessage.getMessage());
+                                                                    lastMessageObj.put("lastMessageTime", chatMessage.getTime());
+                                                                    firebaseDatabase.getReference().child("chats").child(senderRoom).updateChildren(lastMessageObj);
+                                                                    firebaseDatabase.getReference().child("chats").child(receiverRoom).updateChildren(lastMessageObj);
 
-                                                                    if (!user.getUid().trim().equals(currentUser.getUid().trim())) {
-                                                                        firebaseManager.getUserName(currentUser.getUid().trim());
+                                                                    if (!user.getUid().equals(currentUser.getUid())) {
+                                                                        firebaseManager.getUserName(currentUser.getUid());
                                                                         firebaseManager.setReadUserName(new FirebaseManager.GetUserNameListener() {
                                                                             @Override
                                                                             public void getUserNameListener(String name) {
-                                                                                sendNotification(user.getToken().trim(), name.trim(), message.trim());
+                                                                                sendNotification(user.getToken(), name, message);
                                                                             }
                                                                         });
                                                                     }
@@ -403,15 +407,15 @@ public class ChatActivity extends AppCompat {
         });
 
         FirebaseUser currentUser = firebaseAuth.getCurrentUser();
-        if (currentUser != null) {
-            if (!user.getUid().trim().equals(currentUser.getUid().trim())) {
+        if (currentUser != null && user.getUid() != null ) {
+            if (!user.getUid().equals(currentUser.getUid())) {
                 final Handler handler = new Handler();
                 Runnable runnable = new Runnable() {
                     @Override
                     public void run() {
                         HashMap<String, Object> isTyping = new HashMap<>();
                         isTyping.put("friendTyping", NOT_TYPING);
-                        firebaseDatabase.getReference().child("chats").child(receiverRoom.trim()).updateChildren(isTyping);
+                        firebaseDatabase.getReference().child("chats").child(receiverRoom).updateChildren(isTyping);
                     }
                 };
                 activityChatBinding.edtChatMessage.addTextChangedListener(new TextWatcher() {
@@ -427,7 +431,7 @@ public class ChatActivity extends AppCompat {
                     public void afterTextChanged(Editable editable) {
                         HashMap<String, Object> isTyping = new HashMap<>();
                         isTyping.put("friendTyping", TYPING);
-                        firebaseDatabase.getReference().child("chats").child(receiverRoom.trim()).updateChildren(isTyping);
+                        firebaseDatabase.getReference().child("chats").child(receiverRoom).updateChildren(isTyping);
 
                         handler.removeCallbacksAndMessages(null);
                         handler.postDelayed(runnable, 1000);
@@ -450,7 +454,7 @@ public class ChatActivity extends AppCompat {
                         DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault());
                         String time = dateFormat.format(date);
 
-                        StorageReference storageReference = firebaseStorage.getReference().child(USER_CHAT_STORAGE.trim() + currentUser.getUid().trim() + "/" + senderRoom + "/" + time.trim());
+                        StorageReference storageReference = firebaseStorage.getReference().child(USER_CHAT_STORAGE + currentUser.getUid() + "/" + senderRoom + "/" + time);
                         storageReference.putFile(uri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                             @Override
                             public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
@@ -458,15 +462,15 @@ public class ChatActivity extends AppCompat {
                                     storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                         @Override
                                         public void onSuccess(Uri uri) {
-                                            String image = uri.toString().trim();
+                                            String image = uri.toString();
 
                                             String message = "";
                                             String randomID = firebaseDatabase.getReference().push().getKey(); // It mean key
 
-                                            ChatMessage chatMessage = new ChatMessage(currentUser.getUid().trim(), message, image, time);
+                                            ChatMessage chatMessage = new ChatMessage(currentUser.getUid(), message, image, time);
                                             firebaseDatabase.getReference()
                                                     .child("chats")
-                                                    .child(senderRoom.trim())
+                                                    .child(senderRoom)
                                                     .child("messages")
                                                     .child(randomID)
                                                     .setValue(chatMessage)
@@ -481,7 +485,7 @@ public class ChatActivity extends AppCompat {
                                                         public void onSuccess(Void unused) {
                                                             firebaseDatabase.getReference()
                                                                     .child("chats")
-                                                                    .child(receiverRoom.trim())
+                                                                    .child(receiverRoom)
                                                                     .child("messages")
                                                                     .child(randomID)
                                                                     .setValue(chatMessage)
@@ -498,16 +502,16 @@ public class ChatActivity extends AppCompat {
 
                                                                             HashMap<String, Object> lastMessageObj = new HashMap<>();
                                                                             lastMessageObj.put("lastMessage", "photo");
-                                                                            lastMessageObj.put("lastMessageTime", chatMessage.getTime().trim());
-                                                                            firebaseDatabase.getReference().child("chats").child(senderRoom.trim()).updateChildren(lastMessageObj);
-                                                                            firebaseDatabase.getReference().child("chats").child(receiverRoom.trim()).updateChildren(lastMessageObj);
+                                                                            lastMessageObj.put("lastMessageTime", chatMessage.getTime());
+                                                                            firebaseDatabase.getReference().child("chats").child(senderRoom).updateChildren(lastMessageObj);
+                                                                            firebaseDatabase.getReference().child("chats").child(receiverRoom).updateChildren(lastMessageObj);
 
-                                                                            if (!user.getUid().trim().equals(currentUser.getUid().trim())) {
-                                                                                firebaseManager.getUserName(currentUser.getUid().trim());
+                                                                            if (!user.getUid().equals(currentUser.getUid())) {
+                                                                                firebaseManager.getUserName(currentUser.getUid());
                                                                                 firebaseManager.setReadUserName(new FirebaseManager.GetUserNameListener() {
                                                                                     @Override
                                                                                     public void getUserNameListener(String name) {
-                                                                                        sendNotification(user.getToken().trim(), name.trim(), "photo");
+                                                                                        sendNotification(user.getToken(), name, "photo");
                                                                                     }
                                                                                 });
                                                                             }
@@ -534,12 +538,12 @@ public class ChatActivity extends AppCompat {
             String url = "https://fcm.googleapis.com/fcm/send";
 
             JSONObject data = new JSONObject();
-            data.put("title", name.trim());
-            data.put("body", message.trim());
+            data.put("title", name);
+            data.put("body", message);
 
             JSONObject notificationData = new JSONObject();
             notificationData.put("notification", data);
-            notificationData.put("to", token.trim());
+            notificationData.put("to", token);
 
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, notificationData, new Response.Listener<JSONObject>() {
                 @Override

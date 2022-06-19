@@ -62,7 +62,7 @@ public class User implements Parcelable {
     };
 
     public String getUid() {
-        return uid;
+        return uid == null ? "null" : uid;
     }
 
     public void setUid(String uid) {

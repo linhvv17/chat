@@ -86,4 +86,5 @@
         app:itemIconTint="@drawable/bottom_navigation_color_selector"
         app:itemTextColor="@drawable/bottom_navigation_color_selector"
         app:menu="@menu/menu_bottom_nav" />
+
 </LinearLayout>

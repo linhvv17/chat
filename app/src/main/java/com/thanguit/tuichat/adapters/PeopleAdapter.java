@@ -17,6 +17,8 @@ import com.thanguit.tuichat.models.User;
 
 import java.util.List;
 
+import static com.thanguit.tuichat.adapters.UserAdapter.trim;
+
 public class PeopleAdapter extends RecyclerView.Adapter<PeopleAdapter.ViewHolder> {
     private Context context;
     private List<User> userList;
@@ -39,14 +41,14 @@ public class PeopleAdapter extends RecyclerView.Adapter<PeopleAdapter.ViewHolder
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Picasso.get()
-                .load(userList.get(position).getAvatar().trim())
+                .load(trim(userList.get(position).getAvatar()))
                 .placeholder(R.drawable.ic_user_avatar)
                 .error(R.drawable.ic_user_avatar)
                 .into(holder.itemPeopleBinding.civAvatar);
 
-        holder.itemPeopleBinding.tvUserName.setText(userList.get(position).getName().trim());
+        holder.itemPeopleBinding.tvUserName.setText(trim(userList.get(position).getName()));
 
-        if (userList.get(position).getStatus().equals(STATUS_DATABASE_ONLINE.trim())) {
+        if (userList.get(position).getStatus().equals(STATUS_DATABASE_ONLINE)) {
             holder.itemPeopleBinding.ivStatusOnline.setVisibility(View.VISIBLE);
         } else {
             holder.itemPeopleBinding.ivStatusOnline.setVisibility(View.GONE);

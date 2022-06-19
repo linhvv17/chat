@@ -132,7 +132,7 @@ public class ChatFragment extends Fragment {
                 }
             });
 
-//            FirebaseManager.getInstance().getUserInfo(currentUser.getUid().trim());
+//            FirebaseManager.getInstance().getUserInfo(currentUser.getUid());
 //            FirebaseManager.getInstance().setReadUserInformation(new FirebaseManager.GetUserInformationListener() {
 //                @Override
 //                public void getUserInformationListener(User user) {
@@ -149,7 +149,7 @@ public class ChatFragment extends Fragment {
 //                }
 //            });
 //
-//            firebaseDatabase.getReference().child(STORY_DATABASE.trim()).addValueEventListener(new ValueEventListener() {
+//            firebaseDatabase.getReference().child(STORY_DATABASE).addValueEventListener(new ValueEventListener() {
 //                @Override
 //                public void onDataChange(@NonNull DataSnapshot snapshot) {
 //                    if (snapshot.exists()) {
@@ -245,10 +245,10 @@ public class ChatFragment extends Fragment {
             String time = dateFormat.format(date);
 
             StorageReference storageReference = firebaseStorage.getReference()
-                    .child(USER_STORY_STORAGE.trim() + currentUser.getUid().trim() + "/" + time.trim());
+                    .child(USER_STORY_STORAGE + currentUser.getUid() + "/" + time);
             for (int i = 0; i < uriList.size(); i++) {
                 Uri individualImage = uriList.get(i);
-                StorageReference imageName = storageReference.child(individualImage.getLastPathSegment().trim());
+                StorageReference imageName = storageReference.child(individualImage.getLastPathSegment());
                 imageName.putFile(individualImage).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
@@ -256,12 +256,12 @@ public class ChatFragment extends Fragment {
                             imageName.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                 @Override
                                 public void onSuccess(Uri uri) {
-                                    String storyImage = uri.toString().trim();
+                                    String storyImage = uri.toString();
 
                                     UserStory userStory = new UserStory();
                                     userStory.setName(mUser.getName());
                                     userStory.setAvatar(mUser.getAvatar());
-                                    userStory.setLastUpdated(time.trim());
+                                    userStory.setLastUpdated(time);
 
                                     HashMap<String, Object> userStoryObj = new HashMap<>();
                                     userStoryObj.put("name", userStory.getName());
@@ -271,13 +271,13 @@ public class ChatFragment extends Fragment {
                                     Story story = new Story(storyImage, userStory.getLastUpdated());
 
                                     firebaseDatabase.getReference()
-                                            .child(STORY_DATABASE.trim())
-                                            .child(currentUser.getUid().trim())
+                                            .child(STORY_DATABASE)
+                                            .child(currentUser.getUid())
                                             .updateChildren(userStoryObj);
 
                                     firebaseDatabase.getReference()
-                                            .child(STORY_DATABASE.trim())
-                                            .child(currentUser.getUid().trim())
+                                            .child(STORY_DATABASE)
+                                            .child(currentUser.getUid())
                                             .child("stories")
                                             .push()
                                             .setValue(story);

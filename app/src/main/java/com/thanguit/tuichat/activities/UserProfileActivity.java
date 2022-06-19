@@ -91,21 +91,21 @@ public class UserProfileActivity extends AppCompat {
 
         FirebaseUser currentUser = firebaseAuth.getCurrentUser();
         if (currentUser != null) {
-            firebaseManager.getUserInfo(currentUser.getUid().trim());
+            firebaseManager.getUserInfo(currentUser.getUid());
             firebaseManager.setReadUserInformation(new FirebaseManager.GetUserInformationListener() {
                 @Override
                 public void getUserInformationListener(User user) {
                     if (user != null) {
                         Picasso.get()
-                                .load(user.getAvatar().trim())
+                                .load(user.getAvatar())
                                 .placeholder(R.drawable.ic_user_avatar)
                                 .error(R.drawable.ic_user_avatar)
                                 .into(activityUserProfileBinding.civAvatarFrame);
 
-                        activityUserProfileBinding.tvUserName.setText(user.getName().trim());
-                        activityUserProfileBinding.edtName.setText(user.getName().trim());
-                        activityUserProfileBinding.edtEmail.setText(user.getEmail().trim());
-                        activityUserProfileBinding.edtPhoneNumber.setText(user.getPhoneNumber().trim());
+                        activityUserProfileBinding.tvUserName.setText(user.getName());
+                        activityUserProfileBinding.edtName.setText(user.getName());
+                        activityUserProfileBinding.edtEmail.setText(user.getEmail());
+                        activityUserProfileBinding.edtPhoneNumber.setText(user.getPhoneNumber());
                     }
                 }
             });
@@ -118,9 +118,9 @@ public class UserProfileActivity extends AppCompat {
             public void onClick(View view) {
                 FirebaseUser currentUser = firebaseAuth.getCurrentUser();
                 if (currentUser != null) {
-                    String name = activityUserProfileBinding.edtName.getText().toString().trim();
-                    String email = activityUserProfileBinding.edtEmail.getText().toString().trim();
-//                    String phoneNumber = activityUserProfileBinding.edtPhoneNumber.getText().toString().trim();
+                    String name = activityUserProfileBinding.edtName.getText().toString();
+                    String email = activityUserProfileBinding.edtEmail.getText().toString();
+//                    String phoneNumber = activityUserProfileBinding.edtPhoneNumber.getText().toString();
 
                     if (name.isEmpty()) {
                         activityUserProfileBinding.edtName.setError(getString(R.string.edtSetupProfileNameError));
@@ -132,7 +132,7 @@ public class UserProfileActivity extends AppCompat {
                         updateData.put("email", email);
 
                         firebaseDatabase.getReference()
-                                .child(USER_DATABASE.trim())
+                                .child(USER_DATABASE)
                                 .child(currentUser.getUid())
                                 .updateChildren(updateData)
                                 .addOnFailureListener(new OnFailureListener() {
@@ -194,10 +194,10 @@ public class UserProfileActivity extends AppCompat {
 
     private void openLogoutDialog() {
         OptionDialog logoutDialog = new OptionDialog(this,
-                getResources().getString(R.string.btnDialog23).trim(),
-                getResources().getString(R.string.tvDialogContent3).trim(),
-                getResources().getString(R.string.btnDialog11).trim(),
-                getResources().getString(R.string.btnDialog23).trim(), true,
+                getResources().getString(R.string.btnDialog23),
+                getResources().getString(R.string.tvDialogContent3),
+                getResources().getString(R.string.btnDialog11),
+                getResources().getString(R.string.btnDialog23), true,
                 new OptionDialog.SetActionButtonListener() {
                     @Override
                     public void setNegativeButtonListener(Dialog dialog) {
@@ -207,6 +207,7 @@ public class UserProfileActivity extends AppCompat {
                     @Override
                     public void setPositiveButtonListener(Dialog dialog) {
                         dialog.dismiss();
+                        FirebaseAuth.getInstance().signOut();
                         firebaseAuth.signOut();
                         moveTaskToBack(true);
                         Intent intent = new Intent(UserProfileActivity.this, LoginActivity.class);
@@ -226,7 +227,7 @@ public class UserProfileActivity extends AppCompat {
                     if (firebaseUser != null) {
                         loadingDialog.startLoading(UserProfileActivity.this, false);
 
-                        StorageReference storageReference = firebaseStorage.getReference().child(USER_AVATAR_STORAGE.trim()).child(firebaseUser.getUid());
+                        StorageReference storageReference = firebaseStorage.getReference().child(USER_AVATAR_STORAGE).child(firebaseUser.getUid());
                         storageReference.putFile(uri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                             @Override
                             public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
@@ -234,10 +235,10 @@ public class UserProfileActivity extends AppCompat {
                                     storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                         @Override
                                         public void onSuccess(Uri uri) {
-                                            String avatar = uri.toString().trim();
+                                            String avatar = uri.toString();
 
                                             firebaseDatabase.getReference()
-                                                    .child(USER_DATABASE.trim())
+                                                    .child(USER_DATABASE)
                                                     .child(firebaseUser.getUid())
                                                     .child("avatar")
                                                     .setValue(avatar)

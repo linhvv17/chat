@@ -61,18 +61,18 @@ public class PhoneNumberActivity extends AppCompat {
         activityPhoneNumberBinding.btnPhoneNumber.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String countryCode = activityPhoneNumberBinding.ccpCountryCodePicker.getSelectedCountryCodeWithPlus().trim();
-                String phoneNumber = activityPhoneNumberBinding.edtPNumber.getText().toString().trim();
+                String countryCode = activityPhoneNumberBinding.ccpCountryCodePicker.getSelectedCountryCodeWithPlus();
+                String phoneNumber = activityPhoneNumberBinding.edtPNumber.getText().toString();
                 String yourPhoneNumber = countryCode + phoneNumber;
 
                 if (phoneNumber.isEmpty()) {
                     activityPhoneNumberBinding.edtPNumber.setError(getString(R.string.edtPNumberError));
                     openSoftKeyboard.openSoftKeyboard(PhoneNumberActivity.this, activityPhoneNumberBinding.edtPNumber);
                 } else {
-                    Log.d(TAG, "Your Phone Number: " + yourPhoneNumber.trim());
+                    Log.d(TAG, "Your Phone Number: " + yourPhoneNumber);
 
                     Intent intent = new Intent(PhoneNumberActivity.this, OTPActivity.class);
-                    intent.putExtra("PHONE_NUMBER", yourPhoneNumber.trim());
+                    intent.putExtra("PHONE_NUMBER", yourPhoneNumber);
                     startActivity(intent);
                 }
             }

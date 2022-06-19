@@ -69,7 +69,7 @@ public class OutGoingCallActivity extends AppCompat {
 //        if (bundle != null) {
 //            user = (User) bundle.getParcelable("USER");
 //            if (user != null) {
-//                to = user.getUid().trim();
+//                to = user.getUid();
 //            }
 //            isVideoCall = bundle.getBoolean("VIDEO_CALL", false);
 //        }

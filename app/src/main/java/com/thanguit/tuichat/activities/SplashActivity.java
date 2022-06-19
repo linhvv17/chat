@@ -58,6 +58,8 @@ public class SplashActivity extends AppCompat {
         activitySplashBinding.imvLogo.setAnimation(this.topAnimation);
         activitySplashBinding.tvDeveloper.setAnimation(this.bottomAnimation);
 
+
+
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {

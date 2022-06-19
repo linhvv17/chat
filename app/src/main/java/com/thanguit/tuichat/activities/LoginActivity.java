@@ -7,16 +7,20 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 
 import android.app.Activity;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
+import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -41,6 +45,9 @@ import com.thanguit.tuichat.models.User;
 import com.thanguit.tuichat.utils.LoadingDialog;
 import com.thanguit.tuichat.utils.MyToast;
 
+import com.facebook.FacebookSdk;
+import com.facebook.appevents.AppEventsLogger;
+
 import java.util.Arrays;
 
 public class LoginActivity extends AppCompat {
@@ -60,11 +67,14 @@ public class LoginActivity extends AppCompat {
 
     private static final String USER_DATABASE = "users";
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         activityLoginBinding = ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(activityLoginBinding.getRoot());
+
+        FacebookSdk.sdkInitialize(getApplicationContext());
 
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseDatabase = FirebaseDatabase.getInstance();
@@ -74,12 +84,13 @@ public class LoginActivity extends AppCompat {
 
         initializeViews();
         listeners();
+
+
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-
         FirebaseUser currentUser = firebaseAuth.getCurrentUser();
         if (currentUser != null) {
             updateUI();
@@ -97,6 +108,8 @@ public class LoginActivity extends AppCompat {
                 .requestEmail()
                 .build();
         googleSignInClient = GoogleSignIn.getClient(this, gso);
+
+
     }
 
     private void listeners() {
@@ -138,7 +151,7 @@ public class LoginActivity extends AppCompat {
                                                 loadingDialog.startLoading(LoginActivity.this, false);
 
                                                 firebaseDatabase.getReference()
-                                                        .child(USER_DATABASE.trim())
+                                                        .child(USER_DATABASE)
                                                         .child(firebaseUser.getUid())
                                                         .get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                                                     @Override
@@ -226,7 +239,7 @@ public class LoginActivity extends AppCompat {
                                         loadingDialog.startLoading(LoginActivity.this, false);
 
                                         firebaseDatabase.getReference()
-                                                .child(USER_DATABASE.trim())
+                                                .child(USER_DATABASE)
                                                 .child(firebaseUser.getUid())
                                                 .get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                                             @Override
@@ -288,10 +301,13 @@ public class LoginActivity extends AppCompat {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
+
+
+
     private void addUserIntoDatabase(User user) {
 //        Uri avatar = Uri.parse(user.getAvatar());
         firebaseDatabase.getReference()
-                .child(USER_DATABASE.trim())
+                .child(USER_DATABASE)
                 .child(user.getUid())
                 .setValue(user)
                 .addOnFailureListener(new OnFailureListener() {
